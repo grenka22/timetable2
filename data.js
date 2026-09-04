@@ -22,6 +22,14 @@ const DataManager = {
         this.saveSchedule(data);
     },
 
+    updateLessonHomework(dayIndex, lessonIndex, homework, weekType = 'odd') {
+        const data = this.getSchedule();
+        if (data[weekType] && data[weekType][dayIndex] && data[weekType][dayIndex][lessonIndex]) {
+            data[weekType][dayIndex][lessonIndex].homework = homework;
+            this.saveSchedule(data);
+        }
+    },
+
     clearAll() {
         localStorage.removeItem(STORAGE_KEY);
     }
