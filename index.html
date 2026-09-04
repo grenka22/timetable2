@@ -6,6 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Расписание">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title> расписание</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
@@ -42,8 +43,8 @@
         <section id="view-upload" class="view">
             <div class="upload-area">
                 <p>Загрузите фото расписания</p>
-                <input type="file" id="file-input" accept="image/jpeg, image/png, image/heic" capture="environment">
-                <label for="file-input" class="btn-primary">Выбрать фото или снять</label>
+                <input type="file" id="file-input" accept="image/*">
+                <label for="file-input" class="upload-label">📷 Выбрать фото</label>
             </div>
             <div id="ocr-progress" class="ocr-progress hidden">
                 <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
