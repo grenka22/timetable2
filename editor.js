@@ -26,15 +26,25 @@ const Editor = {
         }
 
         this.tempSchedule.forEach((lesson, index) => {
+            // Разбиваем время на начало и конец
+            const [startTime, endTime] = lesson.time ? lesson.time.split(/[-–]/) : ['08:00', '08:45'];
+            
             const div = document.createElement('div');
             div.className = 'editor-item';
             div.innerHTML = `
                 <div class="editor-item-row">
-                    <input type="text" value="${lesson.time}" data-index="${index}" data-field="time" placeholder="08:00-08:45" style="flex:1;">
+                    <div class="time-picker-group">
+                        <label>Начало</label>
+                        <input type="time" value="${startTime}" data-index="${index}" data-field="startTime" class="time-input">
+                    </div>
+                    <div class="time-picker-group">
+                        <label>Конец</label>
+                        <input type="time" value="${endTime}" data-index="${index}" data-field="endTime" class="time-input">
+                    </div>
                     <button class="btn-delete" data-index="${index}">✕</button>
                 </div>
-                <input type="text" value="${lesson.name}" data-index="${index}" data-field="name" placeholder="Предмет">
-                <input type="text" value="${lesson.extra}" data-index="${index}" data-field="extra" placeholder="Кабинет / Учитель">
+                <input type="text" value="${lesson.name}" data-index="${index}" data-field="name" placeholder="Предмет" class="editor-input">
+                <input type="text" value="${lesson.extra}" data-index="${index}" data-field="extra" placeholder="Кабинет / Учитель" class="editor-input">
             `;
             container.appendChild(div);
         });
@@ -44,7 +54,20 @@ const Editor = {
             input.addEventListener('input', (e) => {
                 const idx = e.target.dataset.index;
                 const field = e.target.dataset.field;
-                this.tempSchedule[idx][field] = e.target.value;
+                
+                if (field === 'startTime' || field === 'endTime') {
+                    // Обновляем поле time в формате "08:00-08:45"
+                    const currentLesson = this.tempSchedule[idx];
+                    const [currentStart, currentEnd] = currentLesson.time ? currentLesson.time.split(/[-–]/) : ['08:00', '08:45'];
+                    
+                    if (field === 'startTime') {
+                        currentLesson.time = `${e.target.value}-${currentEnd}`;
+                    } else {
+                        currentLesson.time = `${currentStart}-${e.target.value}`;
+                    }
+                } else {
+                    this.tempSchedule[idx][field] = e.target.value;
+                }
             });
         });
 
@@ -59,7 +82,12 @@ const Editor = {
     },
 
     addLesson() {
-        this.tempSchedule.push({ time: "08:00-08:45", name: "Новый урок", extra: "" });
+        this.tempSchedule.push({ 
+            time: "08:00-08:45", 
+            name: "Новый урок", 
+            extra: "",
+            homework: ""
+        });
         this.render();
     },
 
@@ -70,7 +98,7 @@ const Editor = {
     }
 };
 
-// Навешиваем обработчики на кнопки дней (Segmented Control)
+// Навешиваем обработчики на кнопки дней
 document.querySelectorAll('.day-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         const day = parseInt(e.target.dataset.day);
@@ -78,9 +106,6 @@ document.querySelectorAll('.day-btn').forEach(btn => {
     });
 });
 
-// Кнопка добавления урока
 document.getElementById('btn-add-lesson').addEventListener('click', () => Editor.addLesson());
-
-// Кнопки сохранения/отмены
 document.getElementById('btn-save-editor').addEventListener('click', () => Editor.save());
 document.getElementById('btn-cancel-editor').addEventListener('click', () => App.showView('home'));
