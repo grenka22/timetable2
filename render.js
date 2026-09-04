@@ -1,6 +1,6 @@
 const Render = {
     currentWeek: 'odd',
-    selectedDay: new Date().getDay() || 7, // 1-Пн ... 7-Вс (приводим Вс к 7, но в данных 6-Сб)
+    selectedDay: new Date().getDay() || 7,
 
     renderAll() {
         this.renderSmartCard();
@@ -10,11 +10,10 @@ const Render = {
 
     renderSmartCard() {
         const now = new Date();
-        const day = now.getDay(); // 0-Вс, 1-Пн...
+        const day = now.getDay();
         const hours = now.getHours();
         const minutes = now.getMinutes();
         const currentTime = hours * 60 + minutes;
-
         const cardContent = document.getElementById('smart-card-content');
         
         if (day === 0 || day === 6) {
@@ -24,13 +23,11 @@ const Render = {
 
         const lessons = DataManager.getDaySchedule(day, this.currentWeek);
         if (!lessons || lessons.length === 0) {
-            cardContent.innerHTML = "📅 Нет уроков<br><span style='font-size:16px; opacity:0.8'>На сегодня расписание пусто</span>";
+            cardContent.innerHTML = "📅 Нет уроков<br><span style='font-size:16px; opacity:0.8'>Добавьте расписание</span>";
             return;
         }
 
-        let currentLesson = null;
-        let nextLesson = null;
-
+        let currentLesson = null, nextLesson = null;
         for (let i = 0; i < lessons.length; i++) {
             const [start, end] = lessons[i].time.split(/[-–]/);
             const [sh, sm] = start.split(':').map(Number);
@@ -49,15 +46,13 @@ const Render = {
         }
 
         if (currentLesson) {
-            const [start, end] = currentLesson.time.split(/[-–]/);
+            const [, end] = currentLesson.time.split(/[-–]/);
             cardContent.innerHTML = `📖 ${currentLesson.name}<br><span style='font-size:16px; opacity:0.8'>до ${end}</span>`;
         } else if (nextLesson) {
             const [start] = nextLesson.time.split(/[-–]/);
             cardContent.innerHTML = `☀️ Скоро начнется<br><span style='font-size:16px; opacity:0.8'>${nextLesson.name} в ${start}</span>`;
         } else {
-            const dayNames = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-            const nextDay = day === 5 ? 6 : day + 1;
-            cardContent.innerHTML = `📅 День закончился<br><span style='font-size:16px; opacity:0.8'>Завтра: ${dayNames[nextDay]}</span>`;
+            cardContent.innerHTML = `📅 День закончился<br><span style='font-size:16px; opacity:0.8'>Завтра: новый день</span>`;
         }
     },
 
@@ -105,20 +100,60 @@ const Render = {
             let statusClass = '';
             if (isToday) {
                 if (currentTime >= startTime && currentTime <= endTime) statusClass = 'current';
-                else if (currentTime < startTime && !document.querySelector('.current')) statusClass = 'next';
+                else if (currentTime < startTime && !document.querySelector('.lesson-item.current')) statusClass = 'next';
             }
 
             const div = document.createElement('div');
             div.className = `lesson-item ${statusClass}`;
+            
+            let homeworkHtml = '';
+            if (lesson.homework) {
+                homeworkHtml = `
+                    <div class="lesson-homework">
+                        <span class="homework-icon">📝</span>
+                        <span class="homework-text">${lesson.homework}</span>
+                    </div>
+                `;
+            } else {
+                homeworkHtml = `
+                    <div class="lesson-homework-empty">
+                        <button class="btn-add-homework" data-day="${this.selectedDay}" data-index="${index}" data-week="${this.currentWeek}">
+                            + Добавить ДЗ
+                        </button>
+                    </div>
+                `;
+            }
+            
             div.innerHTML = `
-                <div class="lesson-time">${lesson.time}</div>
-                <div class="lesson-info">
-                    <div class="lesson-name">${index + 1}. ${lesson.name}</div>
-                    ${lesson.extra ? `<div class="lesson-extra">${lesson.extra}</div>` : ''}
+                <div class="lesson-main">
+                    <div class="lesson-time">${lesson.time}</div>
+                    <div class="lesson-info">
+                        <div class="lesson-name">${index + 1}. ${lesson.name}</div>
+                        ${lesson.extra ? `<div class="lesson-extra">${lesson.extra}</div>` : ''}
+                    </div>
                 </div>
+                ${homeworkHtml}
             `;
             container.appendChild(div);
         });
+
+        // Обработчики кнопок добавления ДЗ
+        container.querySelectorAll('.btn-add-homework').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const day = parseInt(e.target.dataset.day);
+                const index = parseInt(e.target.dataset.index);
+                const week = e.target.dataset.week;
+                this.showHomeworkInput(day, index, week);
+            });
+        });
+    },
+
+    showHomeworkInput(day, lessonIndex, weekType) {
+        const homework = prompt('Введите домашнее задание:');
+        if (homework !== null) {
+            DataManager.updateLessonHomework(day, lessonIndex, homework, weekType);
+            this.renderLessons();
+        }
     }
 };
 
