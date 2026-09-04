@@ -279,3 +279,101 @@ body {
 #file-input {
     display: none;
 }
+/* Стили для выбора времени */
+.time-picker-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.time-picker-group label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.time-input {
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.time-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+/* Стили для домашнего задания */
+.lesson-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+}
+
+.lesson-homework {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(0, 122, 255, 0.1);
+    border-radius: 8px;
+    border-left: 3px solid var(--primary);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.homework-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.homework-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.lesson-homework-empty {
+    margin-top: 8px;
+}
+
+.btn-add-homework {
+    background: transparent;
+    border: 1px dashed var(--border);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-add-homework:active {
+    background: var(--bg);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.editor-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    margin-top: 8px;
+}
+
+.editor-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
