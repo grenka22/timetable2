@@ -1,0 +1,262 @@
+:root {
+    --primary: #007AFF;
+    --accent: #5856D6;
+    --success: #34C759;
+    --error: #FF3B30;
+    --bg: #F2F2F7;
+    --card-bg: #FFFFFF;
+    --text: #000000;
+    --text-secondary: #8E8E93;
+    --border: #C6C6C8;
+    --safe-area-top: env(safe-area-inset-top);
+    --safe-area-bottom: env(safe-area-inset-bottom);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #000000;
+        --card-bg: #1C1C1E;
+        --text: #FFFFFF;
+        --text-secondary: #98989D;
+        --border: #38383A;
+    }
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    padding-top: calc(60px + var(--safe-area-top));
+    padding-bottom: var(--safe-area-bottom);
+}
+
+.app-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: calc(60px + var(--safe-area-top));
+    padding-top: var(--safe-area-top);
+    background: var(--card-bg);
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 16px;
+    padding-right: 16px;
+    z-index: 100;
+}
+.app-header h1 { font-size: 20px; margin: 0; font-weight: 600; }
+
+.view { display: none; padding: 16px; animation: fadeIn 0.3s ease; }
+.view.active { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scalePress { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
+
+.btn-primary, .btn-secondary, .btn-small {
+    width: 100%; padding: 14px; border: none; border-radius: 12px;
+    font-size: 17px; font-weight: 600; cursor: pointer; margin-top: 12px;
+    transition: transform 0.1s;
+}
+.btn-primary:active, .btn-secondary:active, .btn-small:active { animation: scalePress 0.2s; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-secondary { background: var(--card-bg); color: var(--primary); border: 1px solid var(--primary); }
+.btn-small { width: auto; padding: 8px 12px; font-size: 14px; margin: 0; }
+.btn-text { background: none; border: none; color: var(--primary); width: 100%; margin-top: 16px; font-size: 17px; }
+
+/* Smart Card */
+.smart-card {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white; padding: 20px; border-radius: 16px; margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0,122,255,0.3);
+}
+.smart-card-header { font-size: 13px; text-transform: uppercase; opacity: 0.8; margin-bottom: 8px; }
+.smart-card-content { font-size: 22px; font-weight: 700; line-height: 1.3; }
+
+/* Tabs & Toggles */
+.week-toggle { display: flex; gap: 8px; margin-bottom: 16px; background: var(--card-bg); padding: 4px; border-radius: 10px; }
+.toggle-btn { flex: 1; padding: 8px; border: none; background: transparent; color: var(--text-secondary); border-radius: 8px; font-weight: 600; }
+.toggle-btn.active { background: var(--bg); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+.day-tabs { display: flex; overflow-x: auto; gap: 8px; margin-bottom: 16px; padding-bottom: 4px; scrollbar-width: none; }
+.day-tab { padding: 8px 16px; background: var(--card-bg); border-radius: 20px; font-size: 15px; font-weight: 500; white-space: nowrap; border: 1px solid transparent; }
+.day-tab.active { background: var(--primary); color: white; }
+.day-tab.today { border-color: var(--primary); }
+
+/* Lessons List */
+.lesson-item {
+    background: var(--card-bg); padding: 16px; border-radius: 12px; margin-bottom: 12px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-left: 4px solid transparent; transition: transform 0.2s;
+}
+.lesson-item.current { border-left-color: var(--primary); }
+.lesson-item.next { border-left-color: var(--success); }
+.lesson-time { font-size: 14px; color: var(--text-secondary); font-weight: 600; min-width: 80px; }
+.lesson-info { flex: 1; margin-left: 12px; }
+.lesson-name { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+.lesson-extra { font-size: 13px; color: var(--text-secondary); }
+
+/* Upload & OCR */
+.upload-area { text-align: center; padding: 40px 20px; background: var(--card-bg); border-radius: 16px; border: 2px dashed var(--border); }
+#file-input { display: none; }
+.ocr-progress { margin-top: 24px; text-align: center; }
+.progress-bar { width: 100%; height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+.progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.3s; }
+.hidden { display: none !important; }
+
+/* Editor */
+.editor-item { background: var(--card-bg); padding: 12px; border-radius: 12px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; }
+.editor-item input { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 8px; font-size: 16px; width: 100%; }
+.editor-item-row { display: flex; gap: 8px; }
+.btn-delete { background: var(--error); color: white; border: none; border-radius: 8px; padding: 0 16px; font-weight: 600; }
+.app-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 64px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.app-header h1 {
+    font-size: 20px;
+    margin: 0;
+    font-weight: 700;
+    background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease infinite;
+    background-size: 200% 200%;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.icon-btn {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #007AFF, #5856D6);
+    border: none;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.icon-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.icon-btn:hover::before {
+    opacity: 1;
+}
+
+.icon-btn:active {
+    transform: scale(0.92) rotate(-5deg);
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+    .app-header {
+        background: #1c1c1e;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    }
+}
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 12px;
+}
+
+.day-selector {
+    display: flex;
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    flex: 1;
+}
+
+.day-btn {
+    flex: 1;
+    padding: 8px 4px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.day-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,122,255,0.3);
+}
+
+.day-btn:active {
+    transform: scale(0.95);
+}
+
+.add-lesson-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: var(--success);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(52,199,89,0.3);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.add-lesson-btn .icon {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.add-lesson-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 1px 4px rgba(52,199,89,0.2);
+}
+
+@media (max-width: 380px) {
+    .day-btn {
+        font-size: 12px;
+        padding: 8px 2px;
+    }
+    .add-lesson-btn span:not(.icon) {
+        display: none;
+    }
+}
